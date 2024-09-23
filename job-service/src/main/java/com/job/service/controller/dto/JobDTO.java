@@ -2,6 +2,7 @@ package com.job.service.controller.dto;
 
 import com.job.service.external.Company;
 import com.job.service.external.Review;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
 public class JobDTO {
 
     private Long id;

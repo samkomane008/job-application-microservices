@@ -13,15 +13,26 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class JobServiceTest {
@@ -35,9 +46,6 @@ class JobServiceTest {
     @Mock
     private ReviewClient reviewClient;
 
-    @Mock
-    private MapToJobWithCompanyDto mapToJobWithCompanyDto;
-
     @InjectMocks
     private JobService jobService;
 
@@ -45,6 +53,9 @@ class JobServiceTest {
 
     @BeforeEach
     void setUp() {
+        MockitoAnnotations.openMocks(this);
+        jobService = new JobService(jobRepository, companyClient, reviewClient);
+
         job = Job.builder()
                 .id(1L)
                 .title("Software Engineer")
@@ -59,7 +70,7 @@ class JobServiceTest {
     @Test
     void findAllJobs_ShouldReturnListOfJobs() {
         // Arrange
-        List<Job> jobs = Arrays.asList(job);
+        List<Job> jobs = Collections.singletonList(job);
         when(jobRepository.findAll()).thenReturn(jobs);
 
         // Act
@@ -88,24 +99,51 @@ class JobServiceTest {
     @Test
     void getJobById_ShouldReturnJobDTO_WhenJobExists() {
         // Arrange
-        Company company = new Company(1L, "Tech Co.", "A technology company");
-        List<Review> reviews = Arrays.asList(new Review(1L, 1L, 4.5, "Great company"));
+        Company company = Company.builder()
+                .id(1L)
+                .name("Tech Co.")
+                .description("A technology company")
+                .rating(4.5)
+                .build();
 
-        when(jobRepository.findById(1L)).thenReturn(Optional.of(job));
-        when(companyClient.getCompany(1L)).thenReturn(company);
-        when(reviewClient.getReviews(1L)).thenReturn(reviews);
-        when(mapToJobWithCompanyDto.mapToJobWithCompanyDto(job, company, reviews)).thenReturn(new JobDTO(job, company, reviews));
+        Review review = Review.builder()
+                .companyId(1L)
+                .description("")
+                .Id(1L)
+                .rating(5.0)
+                .title("")
+                .build();
+        List<Review> reviews = Collections.singletonList(review);
 
-        // Act
-        JobDTO jobDTO = jobService.getJobById(1L);
+        Job job = Job.builder().id(1L)
+                .title("QA Engineer")
+                .description("Quality Assurance Engineer")
+                .minSalary(18800.0)
+                .maxSalary(250000.0).location("Johannesburg, SA")
+                .companyId(1L)
+                .build();
 
-        // Assert
-        assertNotNull(jobDTO);
-        assertEquals(job.getTitle(), jobDTO.getJob().getTitle());
-        verify(jobRepository, times(1)).findById(1L);
-        verify(companyClient, times(1)).getCompany(1L);
-        verify(reviewClient, times(1)).getReviews(1L);
+        try (MockedStatic<MapToJobWithCompanyDto> mockedStatic = Mockito.mockStatic(MapToJobWithCompanyDto.class)) {
+            mockedStatic.when(() -> MapToJobWithCompanyDto.mapToJobWithCompanyDto(job, company, reviews))
+                    .thenReturn(new JobDTO(1L, "QA Engineer", "Quality Assurance Engineer", 18800.0,
+                            250000.0, "Johannesburg, SA", company, reviews));
+
+            when(jobRepository.findById(1L)).thenReturn(Optional.of(job));
+            when(companyClient.getCompany(1L)).thenReturn(company);
+            when(reviewClient.getReviews(1L)).thenReturn(reviews);
+
+            // Act
+            JobDTO jobDTO = jobService.getJobById(1L);
+
+            // Assert
+            assertNotNull(jobDTO);
+            assertEquals(job.getTitle(), jobDTO.getTitle());
+            verify(jobRepository, times(1)).findById(1L);
+            verify(companyClient, times(1)).getCompany(1L);
+            verify(reviewClient, times(1)).getReviews(1L);
+        }
     }
+
 
     @Test
     void getJobById_ShouldThrowException_WhenJobDoesNotExist() {

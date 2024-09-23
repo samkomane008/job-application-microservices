@@ -35,7 +35,7 @@ public class JobService {
     // Find job by id
     @CircuitBreaker(name = "companyBreaker")
     public JobDTO getJobById(Long jobId) {
-        Job job = jobRepository.findById(jobId).orElse(null);
+        Job job = jobRepository.findById(jobId).orElseThrow(RuntimeException::new);
         assert job != null;
         return convertToDto(job);
     }

@@ -11,6 +11,6 @@ public class Review {
     private Long Id;
     private String title;
     private String description;
-    private String rating;
+    private Double rating;
     private Long companyId;
 }
