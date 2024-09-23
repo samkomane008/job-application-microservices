@@ -1,6 +1,11 @@
 package com.job.service.external;
 
 
+import lombok.*;
+
+@Builder
+@Getter
+@Setter
 public class Review {
 
     private Long Id;

@@ -16,8 +16,8 @@ public class JobDTO {
     private Long id;
     private String title;
     private String description;
-    private String minSalary;
-    private String maxSalary;
+    private Double minSalary;
+    private Double maxSalary;
     private String location;
     private Company company;
     private List<Review> reviews;

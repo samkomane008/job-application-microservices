@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 
+@Builder
 @Getter
 @Setter
 @Entity
@@ -15,8 +16,8 @@ public class Job {
     private Long id;
     private String title;
     private String description;
-    private String minSalary;
-    private String maxSalary;
+    private Double minSalary;
+    private Double maxSalary;
     private String location;
     private Long companyId;
 
