@@ -37,22 +37,26 @@ public class CompanyService {
 
     // update company
     public Company updateCompany(Long companyId, Company company) {
-        Company updatedCompany = companyRepository.findById(companyId).orElse(null);
-        if (updatedCompany != null) {
-            updatedCompany.setDescription(company.getDescription());
-            updatedCompany.setName(company.getName());
-        }
-        return companyRepository.save(updatedCompany);
+        Company updatedCompany = null;
+        if (companyId != null && company != null) {
+           updatedCompany = companyRepository.findById(companyId).orElseThrow(null);
+           if (updatedCompany != null) {
+               updatedCompany.setDescription(company.getDescription());
+               updatedCompany.setName(company.getName());
+               companyRepository.save(updatedCompany);
+           }
+       }
+        return updatedCompany;
     }
 
     // delete company
     public boolean deleteCompany(Long companyId) {
-        if (companyId != null) {
-            companyRepository.deleteById(companyId);
+        Company company = companyRepository.findById(companyId).orElseThrow(null);
+        if (company != null) {
+            companyRepository.delete(company);
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     // get company by id
