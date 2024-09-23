@@ -1,5 +1,7 @@
 package com.company.service.service;
 
+import com.company.service.clients.ReviewClients;
+import com.company.service.dto.ReviewMessage;
 import com.company.service.model.Company;
 import com.company.service.repository.CompanyRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,11 +18,9 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -35,6 +35,9 @@ class CompanyServiceTest {
 
     @InjectMocks
     private CompanyService companyService;
+
+    @Mock
+    private ReviewClients reviewClients;
 
     @BeforeEach
     void setUp() {
@@ -110,11 +113,8 @@ class CompanyServiceTest {
                 .rating(4.8)
                 .build();
 
-        // Act
-        Company result = companyService.updateCompany(1L, companyDetails);
-
-        // Assert
-        assertNull(result);
+        // Act and Assert
+        assertThrows(IllegalArgumentException.class, () -> companyService.updateCompany(1L, companyDetails));
 
         verify(companyRepository, times(1)).findById(1L);
         verify(companyRepository, never()).save(any(Company.class));
@@ -139,7 +139,7 @@ class CompanyServiceTest {
     @Test
     void updateCompany_shouldThrowException_whenCompanyObjectIsNull() {
         // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> companyService.updateCompany(1L, null));
+        assertThrows(NullPointerException.class, () -> companyService.updateCompany(1L, null));
 
         verify(companyRepository, never()).findById(any());
         verify(companyRepository, never()).save(any(Company.class));
@@ -193,13 +193,98 @@ class CompanyServiceTest {
     }
 
     @Test
-    void updateCompanyRating() {
+    void updateCompanyRating_shouldUpdateRating_WhenCompanyExists() {
+        // Arrange
+        ReviewMessage reviewMessage = ReviewMessage.builder()
+                .companyId(1L)
+                .description("Great company!")
+                .build();
+
+        Company company = Company.builder()
+                .id(1L)
+                .name("Company 1")
+                .rating(3.5)
+                .build();
+
+        when(companyRepository.findById(reviewMessage.getCompanyId())).thenReturn(Optional.of(company));
+        when(reviewClients.getAverageRatingForCompany(reviewMessage.getCompanyId())).thenReturn(4.5);
+
+        // Act
+        companyService.updateCompanyRating(reviewMessage);
+
+        // Assert
+        assertEquals(4.5, company.getRating());
+        verify(companyRepository).save(company);
     }
+
+    @Test
+    void updateCompanyRating_shouldThrowException_WhenCompanyDoesNotExist() {
+        // Arrange
+        ReviewMessage reviewMessage = ReviewMessage.builder()
+                .companyId(1L)
+                .description("Great company!")
+                .build();
+
+        when(companyRepository.findById(reviewMessage.getCompanyId())).thenReturn(Optional.empty());
+
+        // Act & Assert
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> companyService.updateCompanyRating(reviewMessage));
+
+        assertEquals("Company not found  1", exception.getMessage());
+        verify(companyRepository, never()).save(any(Company.class));
+    }
+
+
+    @Test
+    void updateCompanyRating_shouldHandleExceptionFromReviewClients() {
+        // Arrange
+        ReviewMessage reviewMessage = ReviewMessage.builder()
+                .companyId(1L)
+                .description("Great company!")
+                .build();
+
+        Company company = Company.builder()
+                .id(1L)
+                .name("Company 1")
+                .rating(3.5)
+                .build();
+
+        when(companyRepository.findById(reviewMessage.getCompanyId())).thenReturn(Optional.of(company));
+        when(reviewClients.getAverageRatingForCompany(reviewMessage.getCompanyId())).thenThrow(new RuntimeException("Review client error"));
+
+        // Act & Assert
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> companyService.updateCompanyRating(reviewMessage));
+
+        assertEquals("Review client error", exception.getMessage());
+        verify(companyRepository, never()).save(any(Company.class));
+    }
+
+    @Test
+    void updateCompanyRating_shouldNotUpdateRating_WhenCompanyIsNull() {
+        // Arrange
+        ReviewMessage reviewMessage = ReviewMessage.builder()
+                .companyId(1L)
+                .description("Great company!")
+                .build();
+
+        when(companyRepository.findById(reviewMessage.getCompanyId())).thenReturn(Optional.empty());
+
+        // Act & Assert
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> companyService.updateCompanyRating(reviewMessage));
+
+        assertEquals("Company not found  1", exception.getMessage());
+        verify(companyRepository, never()).save(any(Company.class));
+    }
+
+
 
     // create company request object
     private Company companyRequest() {
         return Company.builder()
-                .Id(1000L)
+                .id(1000L)
                 .description("Sample company description")
                 .name("Sample company name")
                 .rating(5.0)
@@ -212,7 +297,7 @@ class CompanyServiceTest {
                 .rating(5.8)
                 .name("Test company name")
                 .description("Insurance company")
-                .Id(1L)
+                .id(1L)
                 .build();
     }
 }

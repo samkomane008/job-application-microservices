@@ -37,17 +37,23 @@ public class CompanyService {
 
     // update company
     public Company updateCompany(Long companyId, Company company) {
-        Company updatedCompany = null;
-        if (companyId != null && company != null) {
-           updatedCompany = companyRepository.findById(companyId).orElseThrow(null);
-           if (updatedCompany != null) {
-               updatedCompany.setDescription(company.getDescription());
-               updatedCompany.setName(company.getName());
-               companyRepository.save(updatedCompany);
-           }
-       }
-        return updatedCompany;
+        if (companyId == null) {
+            throw new NullPointerException("Company ID must not be null");
+        }
+        if (company == null) {
+            throw new NullPointerException("Company details must not be null");
+        }
+
+        Company existingCompany = companyRepository.findById(companyId)
+                .orElseThrow(() -> new IllegalArgumentException("Company not found with id: " + companyId));
+
+        existingCompany.setDescription(company.getDescription());
+        existingCompany.setName(company.getName());
+        companyRepository.save(existingCompany);
+
+        return existingCompany;
     }
+
 
     // delete company
     public boolean deleteCompany(Long companyId) {
