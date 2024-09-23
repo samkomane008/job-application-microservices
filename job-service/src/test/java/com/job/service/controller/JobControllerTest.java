@@ -13,11 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,8 +42,9 @@ class JobControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     private JobService jobService;
+
 
     @InjectMocks
     private JobController jobController;
@@ -57,9 +60,9 @@ class JobControllerTest {
     @Test
     void findAll_ShouldReturnListOfJobs_WhenJobsExist() throws Exception {
         // Arrange
-        Job job1 = new Job(1L, "QA Engineer", "Quality Assurance Engineer", 18800.0, 250000.0, "Johannesburg, SA", 1L);
-        Job job2 = new Job(2L, "DevOps Engineer", "DevOps Engineer", 20000.0, 300000.0, "Cape Town, SA", 2L);
-        when(jobService.findAllJobs()).thenReturn(Arrays.asList(job1, job2));
+         List<Job> jobs = Arrays.asList(new Job(1L, "QA Engineer", "Quality Assurance Engineer", 18800.0, 250000.0, "Johannesburg, SA", 1L),
+                 new Job(2L, "DevOps Engineer", "DevOps Engineer", 20000.0, 300000.0, "Cape Town, SA", 2L));
+        when(jobService.findAllJobs()).thenReturn(jobs);
 
         // Act & Assert
         mockMvc.perform(get("/jobs"))
