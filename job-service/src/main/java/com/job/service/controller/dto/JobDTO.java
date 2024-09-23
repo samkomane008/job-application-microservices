@@ -9,18 +9,17 @@ import lombok.Setter;
 
 import java.util.List;
 
-@Getter
-@Setter
 @Builder
+@Getter
 @AllArgsConstructor
 public class JobDTO {
 
-    private Long id;
-    private String title;
-    private String description;
-    private Double minSalary;
-    private Double maxSalary;
-    private String location;
-    private Company company;
-    private List<Review> reviews;
+    private final Long id;
+    private final String title;
+    private final String description;
+    private final Double minSalary;
+    private final Double maxSalary;
+    private final String location;
+    private final Company company;
+    private final List<Review> reviews;
 }

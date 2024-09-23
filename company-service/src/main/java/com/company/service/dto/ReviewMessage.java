@@ -6,12 +6,11 @@ import lombok.Setter;
 
 @Builder
 @Getter
-@Setter
 public class ReviewMessage {
 
-    private Long Id;
-    private String title;
-    private String description;
-    private String rating;
-    private Long companyId;
+    private final Long Id;
+    private final String title;
+    private final String description;
+    private final String rating;
+    private final Long companyId;
 }

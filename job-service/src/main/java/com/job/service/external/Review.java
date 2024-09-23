@@ -5,12 +5,11 @@ import lombok.*;
 
 @Builder
 @Getter
-@Setter
 public class Review {
 
-    private Long Id;
-    private String title;
-    private String description;
-    private Double rating;
-    private Long companyId;
+    private final Long Id;
+    private final String title;
+    private final String description;
+    private final Double rating;
+    private final Long companyId;
 }
