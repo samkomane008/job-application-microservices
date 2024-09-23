@@ -13,8 +13,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CompanyService {
 
-    private final CompanyRepository companyRepository;
-    private final ReviewClients reviewClients;
+    private CompanyRepository companyRepository;
+    private ReviewClients reviewClients;
+
+    public CompanyService(CompanyRepository companyRepository) {
+        this.companyRepository = companyRepository;
+    }
 
     // create company
     public boolean createCompany(Company company) {
