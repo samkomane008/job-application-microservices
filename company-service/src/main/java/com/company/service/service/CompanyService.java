@@ -51,12 +51,10 @@ public class CompanyService {
 
     // delete company
     public boolean deleteCompany(Long companyId) {
-        Company company = companyRepository.findById(companyId).orElseThrow(null);
-        if (company != null) {
-            companyRepository.delete(company);
-            return true;
-        }
-        return false;
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new IllegalArgumentException("Company not found with id: " + companyId));
+        companyRepository.delete(company);
+        return true;
     }
 
     // get company by id

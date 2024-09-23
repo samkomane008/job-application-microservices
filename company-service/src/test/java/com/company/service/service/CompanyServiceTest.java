@@ -155,22 +155,30 @@ class CompanyServiceTest {
     void deleteCompanyById_shouldReturnTrue_WhenCompanyExists() {
         // Arrange
         Long companyId = 1L;
-        when(companyRepository.existsById(companyId)).thenReturn(true);
-        doNothing().when(companyRepository).deleteById(companyId);
+        Company existingCompany = companyObject();
+        when(companyRepository.findById(companyId)).thenReturn(Optional.of(existingCompany));
+        doNothing().when(companyRepository).delete(existingCompany);
 
         // Act
         boolean isCompanyDeleted = companyService.deleteCompany(companyId);
 
         // Assert
         assertTrue(isCompanyDeleted);
-        verify(companyRepository, times(1)).deleteById(companyId);
+        verify(companyRepository, times(1)).findById(companyId);
+        verify(companyRepository, times(1)).delete(existingCompany);
     }
 
     @Test
     void deleteCompanyById_shouldThrowException_whenCompanyDoesNotExits() {
-        // Act and Assert
-        assertThrows(NullPointerException.class, () -> companyService.deleteCompany(200L));
-        verify(companyRepository, never()).deleteById(anyLong());
+        // Arrange
+        Long companyId = 1L;
+        when(companyRepository.findById(companyId)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> companyService.deleteCompany(companyId));
+
+        verify(companyRepository, times(1)).findById(companyId);
+        verify(companyRepository, never()).delete(any(Company.class));
     }
 
     @Test
