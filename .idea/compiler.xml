@@ -21,7 +21,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Job-app-microservice" options="-parameters" />
-      <module name="company-service" options="" />
+      <module name="company-service" options="-parameters" />
       <module name="jobms" options="-parameters" />
       <module name="reviews-service" options="-parameters" />
     </option>
