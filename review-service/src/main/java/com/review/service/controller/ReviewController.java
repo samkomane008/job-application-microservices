@@ -39,11 +39,7 @@ public class ReviewController {
     // Get review by Id
     @GetMapping("/{reviewId}")
     public ResponseEntity<Review> getReview(@PathVariable Long reviewId) {
-        Review review = reviewService.getReview(reviewId);
-        if (review == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(review, HttpStatus.OK);
+        return new ResponseEntity<>(reviewService.getReview(reviewId), HttpStatus.OK);
     }
 
     // Update review

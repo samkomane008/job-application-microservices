@@ -3,8 +3,6 @@ package com.review.service.service;
 import com.review.service.model.Review;
 import com.review.service.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
-import org.omg.CosNaming.NamingContextPackage.NotFound;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,9 +30,8 @@ public class ReviewService {
     }
 
     // Get review by Id
-    public Review getReview(Long reviewId) {
-        return reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new RuntimeException("Company not found  "+ reviewId));
+    public Review getReview(Long reviewId){
+        return reviewRepository.findById(reviewId).orElse(null);
     }
 
     // Update review

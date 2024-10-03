@@ -2,28 +2,36 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="jobms" />
+        <module name="service-registry" />
+        <module name="gateway" />
+        <module name="config-server" />
         <module name="reviews-service" />
         <module name="company-service" />
+        <module name="jobms" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="company-service" target="1.5" />
-      <module name="Job-app-microservice" target="1.8" />
+      <module name="company-service" target="1.8" />
+      <module name="config-server" target="1.8" />
+      <module name="gateway" target="1.8" />
       <module name="jobms" target="1.8" />
       <module name="reviews-service" target="1.8" />
+      <module name="service-registry" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="Job-app-microservice" options="-parameters" />
       <module name="company-service" options="-parameters" />
+      <module name="config-server" options="-parameters" />
+      <module name="gateway" options="-parameters" />
       <module name="jobms" options="-parameters" />
       <module name="reviews-service" options="-parameters" />
+      <module name="service-registry" options="-parameters" />
     </option>
   </component>
 </project>
