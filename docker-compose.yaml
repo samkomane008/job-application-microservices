@@ -1,0 +1,134 @@
+version: '3.7'
+services:
+  #  postgres:
+  #    container_name: postgres
+  #    image: postgres
+  #    environment:
+  #      POSTGRES_USER: root
+  #      POSTGRES_PASSWORD: Password$098
+  #      PGDATA: /data/postgres
+  #      volumes:
+  #        - postgres:/data/postres
+  #      ports:
+  #        - "5432:5432"
+  #      networks:
+  #        postgres
+  #      restart: Unless-stopped
+
+  config-server:
+    image: samkomane845898/config-server:latest
+    container_name: config-server
+    ports:
+      - 8080:8080
+    depends_on:
+      - servicereg
+    networks:
+      - microservice-network
+#      - postgres
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  servicereg:
+    image: samkomane845898/servicereg:latest
+    container_name: servicereg
+    ports:
+      - "8761:8761"
+#    depends_on:
+#      - rabbitmq
+#      - zipkin
+#      - postgres
+#      - pgadmin
+    networks:
+      - microservice-network
+#      - postgres
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  company-service:
+    image: samkomane845898/company-service:latest
+    container_name: company-service
+    ports:
+      - 8081:8081
+    depends_on:
+      - servicereg
+      - config-server
+    networks:
+      - microservice-network
+#      - postgres
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  job-service:
+    image: samkomane845898/job-service:latest
+    container_name: job-service
+    ports:
+      - 8082:8082
+    depends_on:
+      - servicereg
+      - config-server
+    networks:
+      - microservice-network
+#      - postgres
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://servicereg:8761/eureka
+
+  review-service:
+    image: samkomane845898/review-service:latest
+    container_name: review-service
+    ports:
+      - 8083:8083
+    depends_on:
+      - servicereg
+      - config-server
+    networks:
+      - microservice-network
+    #      - postgres
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  gateway:
+    image: samkomane845898/gateway:latest
+    container_name: review-service
+    ports:
+      - 8084:8084
+    depends_on:
+      - servicereg
+    networks:
+      - microservice-network
+    #      - postgres
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+#  rebbitmq:
+#    image: rebbitmq:3-management
+#    container_name: rebbitmq
+#    ports:
+#      - 5672:5672
+#      - 15672:15672
+#    networks:
+#      - microservice-network
+    #      - postgres
+
+#  zipkin:
+#    image: openzipkin/zipkin
+#    container_name: zipkin
+#    ports:
+#      - 9411:9411
+#    networks:
+#      - microservice-network
+#    #      - postgres
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=docker
+
+
+networks:
+  microservice-network:
+    driver: bridge
+#  postgres:
+#    driver: bridge
+
+
+volumes:
+#  postgres:
+  pgadmin:

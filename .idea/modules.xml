@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/company-service/company-service.iml" filepath="$PROJECT_DIR$/company-service/company-service.iml" />
-      <module fileurl="file://$PROJECT_DIR$/config-server/config-server.iml" filepath="$PROJECT_DIR$/config-server/config-server.iml" />
-      <module fileurl="file://$PROJECT_DIR$/gateway/gateway.iml" filepath="$PROJECT_DIR$/gateway/gateway.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/job-application-microservices.iml" filepath="$PROJECT_DIR$/.idea/job-application-microservices.iml" />
-      <module fileurl="file://$PROJECT_DIR$/job-service/jobms.iml" filepath="$PROJECT_DIR$/job-service/jobms.iml" />
-      <module fileurl="file://$PROJECT_DIR$/review-service/reviews-service.iml" filepath="$PROJECT_DIR$/review-service/reviews-service.iml" />
-      <module fileurl="file://$PROJECT_DIR$/service-registry-eureka/service-registry.iml" filepath="$PROJECT_DIR$/service-registry-eureka/service-registry.iml" />
     </modules>
   </component>
 </project>
