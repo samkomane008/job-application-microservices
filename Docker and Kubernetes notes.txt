@@ -1,11 +1,13 @@
 
+//***********DOCKER*******************
 // Using maven wrapper instead of maven: - helps run maven commands without downloading maven
-
 1. Create spring boot docker image for service registry(Eureka): ./mvnw spring-boot:build-image "-Dspring-boot.build-image.imageName=samkomane845898/servicereg"
 2. Check if image is created: docker images
 4. Push the image to docker hub: docker push samkomane845898/servicereg
-
-
 5. Run the docker images: docker composer up (This shows logs, if you do not want to see logs then use: docker compose up -d)
-
 6. Once you make some changes in the code, you then need to build the image again and push to the docker hub.
+
+//***********KUBERNETES*******************
+// Running kubernetes
+1. kubectl apply -f first-pod.yaml -> Run container [first-pod is name of file]
+2. kubectl get pods -w -> Run container in watch mode. You will see updates
