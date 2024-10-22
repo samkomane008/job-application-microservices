@@ -11,3 +11,7 @@
 // Running kubernetes
 1. kubectl apply -f first-pod.yaml -> Run container [first-pod is name of file]
 2. kubectl get pods -w -> Run container in watch mode. You will see updates
+3. kubectl delete pod [podName] -> Delete pod
+4. kubectl get deployments -> shows you all deployments and their created pods
+5. kubectl describe deployment -> shows you all deployments and errors
+6. kubectl logs [podName] -> shows you logs of that pod
