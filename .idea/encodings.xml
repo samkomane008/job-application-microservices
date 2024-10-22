@@ -8,6 +8,7 @@
     <file url="file://$PROJECT_DIR$/gateway/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/job-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/job-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/k8s/bootstrap/job/application-docker.properties" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/review-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/review-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/service-registry-eureka/src/main/java" charset="UTF-8" />

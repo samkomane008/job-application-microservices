@@ -15,3 +15,6 @@
 4. kubectl get deployments -> shows you all deployments and their created pods
 5. kubectl describe deployment -> shows you all deployments and errors
 6. kubectl logs [podName] -> shows you logs of that pod
+7. kubectl delete deployments --all --all-namespaces -> delete all deployment pods
+8. kubectl delete Services --all --all-namespaces -> delete all services pods
+9. kubectl exec -it postgres-0 -- psql -U job_application -> Used to log into the terminal of postgres sql and create database
