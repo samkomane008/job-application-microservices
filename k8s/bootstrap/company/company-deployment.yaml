@@ -1,26 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: job
+  name: company
   labels:
-    app: job
+    app: company
 spec:
   replicas: 1
   template:
     metadata:
+      name: company
       labels:
-        app: job
+        app: company
     spec:
       containers:
-        - name: job
-          image: sam0392in/job-service:latest # check image name on docker and correct this
+        - name: company
+          image: sam0392in/company-service:latest # check image name on docker and correct this
           imagePullPolicy: Always
           ports:
-            - containerPort: 8082
+            - containerPort: 8081
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: k8s
       restartPolicy: Always
   selector:
     matchLabels:
-      app: job
+      app: company
